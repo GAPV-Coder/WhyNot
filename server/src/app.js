@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 
 const connectDB = require('./database/connectionDB');
+const { routerApi } = require('./routes/index');
 
 const app = express();
 
@@ -16,5 +17,8 @@ app.use(helmet());
 
 // Connection DB
 connectDB();
+
+// Routes
+app.use('/api/v1', routerApi);
 
 module.exports = app;
