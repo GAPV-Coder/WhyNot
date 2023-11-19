@@ -6,6 +6,8 @@ const helmet = require('helmet');
 const connectDB = require('./database/connectionDB');
 const { routerApi } = require('./routes/index');
 
+require('dotenv').config();
+
 const app = express();
 
 // Middlewares
@@ -20,5 +22,11 @@ connectDB();
 
 // Routes
 app.use('/api/v1', routerApi);
+
+// Run server
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
 
 module.exports = app;
