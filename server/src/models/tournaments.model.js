@@ -14,7 +14,11 @@ const tournamentSchema = new Schema({
     location: {
         type: String,
         required: true
-    }
+    },
+    players: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 });
 
 const Tournament = mongoose.model('Tournament', tournamentSchema);

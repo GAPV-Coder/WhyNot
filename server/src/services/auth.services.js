@@ -1,6 +1,6 @@
 const User = require('../models/user.model');
 const { AppError } = require('../helpers/appError');
-const { generateToken } = require('../helpers/jwt');
+const { generateAndSignToken } = require('../helpers/jwt');
 const {
     encryptPassword,
     comparePassword,
@@ -38,10 +38,11 @@ class AuthServices {
                 role
             });
 
-            const token = generateToken({
-                id_user: newUser._id,
-                email: newUser.email
-            });
+            if (!newUser._id) {
+                throw new AppError('Failed to create user', 500);
+            }
+
+            const token = generateAndSignToken(newUser);
 
             return {
                 user: { ...newUser._doc, password: undefined },
@@ -62,17 +63,14 @@ class AuthServices {
 
             const isMatch = await comparePassword(password, user.password);
             if (!isMatch) {
-                throw new AppError('Invalid email or password', 400);
+                throw new AppError('Invalid email or password', 401);
             }
 
-            const token = generateToken({
-                id_user: user._id,
-                email: user.email,
-            });
+            const token = generateAndSignToken(user);
 
             return { user: { ...user._doc, password: undefined }, token };
         } catch (error) {
-            throw new AppError('Login failed', 400);
+            throw new AppError('Login failed', 403);
         }
     };
 };
